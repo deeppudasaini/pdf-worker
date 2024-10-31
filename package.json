@@ -1,5 +1,5 @@
 {
-    "name": "pdf-worker-processor",
+    "name": "pdf-export-worker",
     "version": "1.0.0",
     "description": "This package allows you to generate and export PDF files in an efficient, non-blocking way by leveraging Web Workers. By offloading the computationally intensive PDF creation process to a separate thread, the main UI thread remains responsive, ensuring smooth user experiences even when exporting large or complex documents.",
 
