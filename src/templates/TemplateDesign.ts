@@ -1,20 +1,21 @@
 import jsPDF from "jspdf";
-import { TemplateOptions } from "../types/index";
-// Templates will be add later
+import { TemplateOptions } from "../types";
+
 /**
- * Class representing a template design for a PDF document.
+ * Represents a template design for generating PDF documents.
  */
 export class TemplateDesign {
-	/**
-	 * Creates an instance of TemplateDesign.
-	 * @param doc - The jsPDF document instance.
-	 */
-	constructor(public doc: jsPDF) {}
+  /**
+   * Creates an instance of TemplateDesign.
+   * @param doc - An instance of jsPDF used to generate the PDF document.
+   */
+  constructor(public doc: jsPDF) {}
 
-	/**
-	 * Generates a transaction template in the PDF document.
-	 * @param options - The options for the transaction template.
-	 */
-	transactionTemplate(options: TemplateOptions) {
-	}
+  /**
+   * Applies a transaction template to the PDF document.
+   * @param options - The options for the template, including a table operator function.
+   */
+  transactionTemplate(options: TemplateOptions) {
+    options.tableOperator();
+  }
 }

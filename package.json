@@ -1,39 +1,33 @@
 {
-	"name": "pdf-worker-processor",
-	"version": "1.0.4",
-	"description": "This package allows you to generate and export PDF files in an efficient, non-blocking way by leveraging Web Workers. By offloading the computationally intensive PDF creation process to a separate thread, the main UI thread remains responsive, ensuring smooth user experiences even when exporting large or complex documents.",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"files": [
-		"dist"
-	],
-	"scripts": {
-		"build": "tsc",
-		"test": "jest",
-		"prepare": "npm run build"
-	},
-	"dependencies": {
-		"jspdf": "^2.5.2",
-		"jspdf-autotable": "^3.5.31",
-		"rxjs": "^7.8.1"
-	},
-	"peerDependencies": {
-		"jspdf-autotable": "^3.5.31",
-		"rxjs": "^7.8.1"
-	},
-	"devDependencies": {
-		"@types/jest": "^29.5.0",
-		"@types/node": "^18.15.11",
-		"jest": "^29.5.0",
-		"ts-jest": "^29.1.0",
-		"typescript": "^5.0.4"
-	},
-	"keywords": ["pdf", "generator", "web-worker", "jspdf", "jspdf-autotable", "pdf-export"],
+    "name": "pdf-worker-processor",
+    "version": "1.0.0",
+    "description": "This package allows you to generate and export PDF files in an efficient, non-blocking way by leveraging Web Workers. By offloading the computationally intensive PDF creation process to a separate thread, the main UI thread remains responsive, ensuring smooth user experiences even when exporting large or complex documents.",
+
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+      "build": "tsc",
+      "prepare": "npm run build"
+    },
+   "keywords": ["pdf", "generator", "web-worker", "jspdf", "jspdf-autotable", "pdf-export"],
 	"author": "Deep Pudasaini",
 	"license": "MIT",
 	"homepage": "https://github.com/deeppudasaini/pdf-worker#README",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/deeppudasaini/pdf-worker.git"
-	  }
-}
+	  },
+    "dependencies": {
+      "jspdf": "^2.5.1",
+      "jspdf-autotable": "^3.5.28",
+      "rxjs": "^7.8.1"
+    },
+    "peerDependencies": {
+		"jspdf-autotable": "^3.5.31",
+		"rxjs": "^7.8.1"
+	},
+    "devDependencies": {
+      "typescript": "^4.9.5",
+      "@types/node": "^18.15.11"
+    }
+  }

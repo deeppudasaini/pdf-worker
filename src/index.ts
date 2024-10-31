@@ -1,5 +1,4 @@
-export * from "./types/index";
-export * from "./PDFGenerator";
-export * from "./workers/PDFWorker";
-export * from "./templates/TemplateDesign";
-export * from "./utils/chunkArray";
+export { executePDFGeneratorWorker } from './utils/pdfUtil';
+export { generatePDF } from './generators/pdfGenerator';
+export { TemplateDesign } from './templates/templateDesign';
+export * from './types';

@@ -1,130 +1,145 @@
+
+
 # pdf-worker-processor
 
-A **PDF generator** that uses Web Workers to handle the PDF generation process efficiently without blocking the main thread. This package is designed to export large datasets or complex document structures in PDF format while keeping your application's UI responsive.
+`pdf-worker-processor` is a JavaScript library designed to streamline the process of generating large PDF files in the browser efficiently. By utilizing Web Workers and jsPDF, this library handles PDF creation and download without blocking the main thread, allowing for efficient memory management and smooth user experience even when processing extensive data sets.
 
-## Key Features
+## Features
 
-- **Web Worker-powered PDF Generation**: Offload the intensive task of PDF creation to a web worker, ensuring that the UI remains smooth and responsive, even for large data exports.
-- **Template-based PDF Design**: Create structured and customizable PDFs using templates. The `TemplateDesign` class allows you to define headers, footers, and other sections with ease.
-- **Transaction Report Support**: Predefined transaction PDF templates, complete with headers, data rows, and footers, making it easy to generate financial or transactional reports.
-- **Data Chunking for Efficiency**: Large datasets are automatically chunked into manageable sizes using the `chunkArray` utility, allowing for smooth PDF generation, even with huge amounts of data.
-- **Progress Tracking**: Real-time progress updates via Web Workers to keep users informed about the export status, ideal for long-running tasks.
-- **PDF Customization**: Integrate advanced customization using `jspdf` and `jspdf-autotable`, offering complete control over PDF structure and content.
-- **Error Handling**: Built-in error handling and worker termination support to manage errors gracefully and free resources when the task is done.
+- **Web Worker Integration**: Offloads PDF generation to a background worker to improve performance and prevent UI blocking.
+- **Chunked Data Processing**: Efficiently processes large datasets by splitting them into manageable chunks.
+- **Custom Table Design**: Supports customizable table headers, body content, and footers, allowing for well-structured, stylized PDF documents.
+- **Memory Management**: Releases resources after processing to optimize memory usage.
+- **Error Handling**: Provides real-time feedback on PDF generation status and handles errors gracefully.
 
 ## Installation
 
-Install the package using npm:
+To install the `pdf-worker-processor` library, use npm or yarn:
 
 ```bash
-npm install pdfworker-generator
+npm install pdf-worker-processor
+# or
+yarn add pdf-worker-processor
 ```
 
 
 ## Usage
 
-Here’s a basic example of how to use `PDFWorker-Generator` to generate a PDF report:
+### Basic Setup
 
-### Basic Example
+In your main JavaScript or TypeScript file, import and call the `executePDFGeneratorWorker` function to initiate PDF generation.
 
-<pre class="!overflow-visible"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-md h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary">typescript</div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"><button class="flex gap-1 items-center py-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-sm"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 5C7 3.34315 8.34315 2 10 2H19C20.6569 2 22 3.34315 22 5V14C22 15.6569 20.6569 17 19 17H17V19C17 20.6569 15.6569 22 14 22H5C3.34315 22 2 20.6569 2 19V10C2 8.34315 3.34315 7 5 7H7V5ZM9 7H14C15.6569 7 17 8.34315 17 10V15H19C19.5523 15 20 14.5523 20 14V5C20 4.44772 19.5523 4 19 4H10C9.44772 4 9 4.44772 9 5V7ZM5 9C4.44772 9 4 9.44772 4 10V19C4 19.5523 4.44772 20 5 20H14C14.5523 20 15 19.5523 15 19V10C15 9.44772 14.5523 9 14 9H5Z" fill="currentColor"></path></svg>Copy code</button></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre hljs language-typescript">import { PDFWorker, PDFGenerator } from 'pdfworker-generator';
+#### 1. Import the library
 
-// Sample data for the PDF report
-const reportData = {
-  header: ['Transaction ID', 'Amount', 'Date'],
+import { executePDFGeneratorWorker } from 'pdf-worker-processor';
+
+
+#### 2. Prepare your data
+
+Define the structure of your PDF report data using the `TransactionPDFReportType` interface.
+
+
+import { TransactionPDFReportType } from 'pdf-worker-processor';
+
+const data: TransactionPDFReportType = {
+  header: ['Column 1', 'Column 2', 'Column 3'],
   data: [
-    ['TXN123', 150.00, new Date()],
-    ['TXN124', 200.00, new Date()],
-    // ...more data
+    ['Row 1 Data 1', 'Row 1 Data 2', 'Row 1 Data 3'],
+    // Add more rows as needed
   ],
-  footer: ['Total Transactions', 2],
+  footer: ['Footer 1', 'Footer 2', 'Footer 3'],
 };
 
-// Initialize the PDF worker
-const pdfWorker = new PDFWorker(
-  (progress) => console.log(`Progress: ${progress}%`), // Progress callback
-  (blobURL) => console.log(`PDF generated: ${blobURL}`), // Completion callback
-  (error) => console.error('Error generating PDF:', error), // Error callback
-  import.meta.url // Base URL for the web worker
-);
 
-// Start processing the data
-pdfWorker.processData(reportData);
 
-// Terminate the worker when needed
-pdfWorker.terminate();
-</code></div></div></pre>
+#### 3. Generate and Download the PDF
 
-### Advanced Example with PDF Customization
+Use the `executePDFGeneratorWorker` function, passing in the data and the desired filename for the PDF
 
-You can customize your PDF by designing templates using the `TemplateDesign` class:
+executePDFGeneratorWorker(data, 'SampleReport.pdf')
+  .then(() => console.log('PDF generated and downloaded successfully!'))
+  .catch((error) => console.error('PDF generation failed:', error));
 
-<pre class="!overflow-visible"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-md h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary">typescript</div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"><button class="flex gap-1 items-center py-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-sm"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 5C7 3.34315 8.34315 2 10 2H19C20.6569 2 22 3.34315 22 5V14C22 15.6569 20.6569 17 19 17H17V19C17 20.6569 15.6569 22 14 22H5C3.34315 22 2 20.6569 2 19V10C2 8.34315 3.34315 7 5 7H7V5ZM9 7H14C15.6569 7 17 8.34315 17 10V15H19C19.5523 15 20 14.5523 20 14V5C20 4.44772 19.5523 4 19 4H10C9.44772 4 9 4.44772 9 5V7ZM5 9C4.44772 9 4 9.44772 4 10V19C4 19.5523 4.44772 20 5 20H14C14.5523 20 15 19.5523 15 19V10C15 9.44772 14.5523 9 14 9H5Z" fill="currentColor"></path></svg>Copy code</button></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre hljs language-typescript">import { PDFGenerator } from 'pdfworker-generator';
+
+### Advanced Configuration
+
+The `pdf-worker-processor` library allows additional customization of the PDF layout, including custom table styling and PDF templating.
+
+#### Template Customization
+
+The library includes a `TemplateDesign` class, which can be used to apply specific design templates for your PDF tables.
+
+<pre class="!overflow-visible"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-md h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary">typescript</div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"><button class="flex gap-1 items-center py-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-sm"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 5C7 3.34315 8.34315 2 10 2H19C20.6569 2 22 3.34315 22 5V14C22 15.6569 20.6569 17 19 17H17V19C17 20.6569 15.6569 22 14 22H5C3.34315 22 2 20.6569 2 19V10C2 8.34315 3.34315 7 5 7H7V5ZM9 7H14C15.6569 7 17 8.34315 17 10V15H19C19.5523 15 20 14.5523 20 14V5C20 4.44772 19.5523 4 19 4H10C9.44772 4 9 4.44772 9 5V7ZM5 9C4.44772 9 4 9.44772 4 10V19C4 19.5523 4.44772 20 5 20H14C14.5523 20 15 19.5523 15 19V10C15 9.44772 14.5523 9 14 9H5Z" fill="currentColor"></path></svg>Copy code</button></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre hljs language-typescript">import { generatePDF, TemplateDesign } from 'pdf-worker-processor';
 import jsPDF from 'jspdf';
 
-const customDoc = new jsPDF();
+const doc = new jsPDF();
+const design = new TemplateDesign(doc);
 
-// Custom report data
-const reportData = {
-  header: ['Product', 'Price', 'Quantity'],
-  data: [
-    ['Laptop', 999.99, 1],
-    ['Phone', 699.99, 2],
-    // ...more rows
-  ],
-  footer: ['Total', 2399.97],
-};
-
-// Generate a PDF using the custom data and template
-const pdfBuffer = PDFGenerator.generate(reportData, customDoc);
-
-// Save or send the generated PDF buffer</code></div></div></pre>
-
+design.transactionTemplate({
+  tableOperator: () => {
+    // Customize table options and layout
+  },
+  date: new Date().toLocaleString(),
+});
+</code></div></div></pre>
 
 ## API Reference
 
-### Classes
+### `executePDFGeneratorWorker(data: TransactionPDFReportType, fileName: string): Promise<void>`
 
-#### `PDFWorker`
+Initiates PDF generation in a Web Worker, handling large datasets by chunking and efficient memory management.
 
-* **constructor(updateProgress, onComplete, onError, baseUrl)** : Initializes a web worker for PDF generation.
-* `updateProgress`: Function called with progress updates (percentage).
-* `onComplete`: Function called when PDF generation is complete.
-* `onError`: Function called when an error occurs.
-* `baseUrl`: URL for worker setup.
-* **processData(data)** : Processes the provided data and starts PDF generation.
-* `data`: The transactional data to be exported to PDF, structured as `TransactionPDFReportType`.
-* **terminate()** : Terminates the worker once the task is completed or cancelled.
+* **Parameters** :
+* `data`: TransactionPDFReportType - Data for the PDF report, including header, body, and footer.
+* `fileName`: string - Name of the PDF file to be downloaded.
+* **Returns** : `Promise<void>` - Resolves when the PDF is successfully generated and downloaded.
 
-#### `PDFGenerator`
+### `generatePDF(data: TransactionPDFReportType, existingDoc?: jsPDF): ArrayBuffer`
 
-* **static generate(data, existingDoc?)** : Generates a PDF document based on the provided data.
-* `data`: The report data to be included in the PDF (`TransactionPDFReportType`).
-* `existingDoc`: Optionally provide an existing `jsPDF` instance to append content.
+Generates a PDF document based on the provided data and optional existing jsPDF instance.
 
-### Interfaces
+* **Parameters** :
+* `data`: TransactionPDFReportType - Data for the PDF report.
+* `existingDoc`: jsPDF (optional) - Existing jsPDF document instance for appending content.
+* **Returns** : `ArrayBuffer` - PDF content in ArrayBuffer format.
 
-#### `TransactionPDFReportType`
+### `TemplateDesign`
 
-* `header`: Array of strings representing the header section of the report.
-* `data`: 2D array where each sub-array represents a row of data in the report.
-* `footer`: Array of strings representing the footer section of the report.
+Class for creating template designs to apply consistent styles and formatting to the PDF document.
 
-#### `WorkerMessage`
+## Error Handling
 
-* `status`: Current status of the worker (`processing` or `completed`).
-* `progress`: Optional progress percentage.
-* `blobURL`: Optional URL of the generated PDF blob.
+* **Status Messages** : The worker communicates progress via status messages (`processing`, `completed`, or `error`).
+* **Error Messages** : Any issues encountered during processing are sent to the main thread for handling and user notification.
 
-### Utilities
+## Example
 
-#### `chunkArray(arr, chunkSize)`
+Below is an example setup that uses `pdf-worker-processor` for generating a large PDF report with customized headers, footers, and efficient background processing:
 
-* Splits an array into smaller arrays (chunks) of a specified size.
-  * `arr`: The array to split.
-  * `chunkSize`: The size of each chunk.
+<pre class="!overflow-visible"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-md h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary">typescript</div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"><button class="flex gap-1 items-center py-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-sm"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 5C7 3.34315 8.34315 2 10 2H19C20.6569 2 22 3.34315 22 5V14C22 15.6569 20.6569 17 19 17H17V19C17 20.6569 15.6569 22 14 22H5C3.34315 22 2 20.6569 2 19V10C2 8.34315 3.34315 7 5 7H7V5ZM9 7H14C15.6569 7 17 8.34315 17 10V15H19C19.5523 15 20 14.5523 20 14V5C20 4.44772 19.5523 4 19 4H10C9.44772 4 9 4.44772 9 5V7ZM5 9C4.44772 9 4 9.44772 4 10V19C4 19.5523 4.44772 20 5 20H14C14.5523 20 15 19.5523 15 19V10C15 9.44772 14.5523 9 14 9H5Z" fill="currentColor"></path></svg>Copy code</button></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre hljs language-typescript">import { executePDFGeneratorWorker } from 'pdf-worker-processor';
+
+const data: TransactionPDFReportType = {
+  header: ['ID', 'Name', 'Amount'],
+  data: [
+    ['1', 'Item A', '10'],
+    ['2', 'Item B', '20'],
+    // More rows as needed
+  ],
+  footer: ['Total', '', '30']
+};
+
+executePDFGeneratorWorker(data, 'Report.pdf')
+  .then(() => console.log('PDF successfully generated!'))
+  .catch(error => console.error('Error generating PDF:', error));
+</code></div></div></pre>
 
 ## Dependencies
 
-* [jsPDF](https://github.com/parallax/jsPDF): A library to generate PDFs in JavaScript.
-* [jspdf-autotable](https://github.com/simonbengtsson/jsPDF-AutoTable): Plugin for `jsPDF` to generate tables in PDFs.
+* **jsPDF** : A JavaScript library for generating PDF documents.
+* **jsPDF-AutoTable** : Extends jsPDF with support for adding tables with custom headers and footers.
+
+## License
+
+This library is MIT licensed.
+
+<pre class="!overflow-visible"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-md h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary"></div></div></pre>
